@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
 function sendTextMessage(sender, text) {
-    messageData = {
+    var messageData = {
         text: text
     };
     request({
@@ -32,25 +32,33 @@ function sendTextMessage(sender, text) {
     });
 }
 
+//WebHook validator
 app.get("/webhook", function (req, res) {
     if (req.query['hub.verify_token'] === process.env.HUB_TOKEN) {
         res.send(req.query['hub.challenge']);
     }
     res.send('Error, wrong validation token');
 });
+
+//WebHook Handler
 app.post('/webhook', function (req, res) {
-    messaging_events = req.body.entry[0].messaging;
+    var messaging_events = req.body.entry[0].messaging;
+    var event;
+    var sender;
     for (i = 0; i < messaging_events.length; i++) {
         event = req.body.entry[0].messaging[i];
         sender = event.sender.id;
+        console.log(event);
         if (event.message && event.message.text) {
             text = event.message.text;
-            sendTextMessage(sender, "Text received, echo: "+ text.substring(0, 200));
+            sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
             console.log(text);
         }
     }
     res.sendStatus(200);
 });
+
+//Home Page
 app.get("/", function (req, res) {
     res.sendFile(__dirname+"/index.html");
 });
