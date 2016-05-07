@@ -1,0 +1,19 @@
+{
+  "name": "jayantsxps",
+  "version": "1.0.0",
+  "description": "Using the Messenger API to build cool stuff.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm start"
+  },
+  "keywords": [
+    "messenger",
+    "facebook",
+    "bot"
+  ],
+  "author": "Jayant Bhawal",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
