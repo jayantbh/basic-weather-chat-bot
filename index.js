@@ -52,7 +52,7 @@ app.post('/webhook', function (req, res) {
     res.sendStatus(200);
 });
 app.get("/", function (req, res) {
-    res.sendFile("./index.html");
+    res.sendFile(__dirname+"/index.html");
 });
 
 app.listen(process.env.PORT || 8080, "0.0.0.0", function () {
