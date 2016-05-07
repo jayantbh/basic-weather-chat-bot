@@ -5,7 +5,7 @@ var express = require('express');
 var app = express();
 
 app.get("/webhook",function (req, res) {
-    if (req.query['hub.verify_token'] === 'the_biggest_risk_one_can_take_is_not_taking_a_risk') {
+    if (req.query['hub.verify_token'] === process.env.HUB_TOKEN) {
         res.send(req.query['hub.challenge']);
     }
     res.send('Error, wrong validation token');

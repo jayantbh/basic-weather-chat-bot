@@ -4,7 +4,8 @@
   "description": "Using the Messenger API to build cool stuff.",
   "main": "index.js",
   "scripts": {
-    "test": "npm start"
+    "test": "npm start",
+    "start": "node index.js"
   },
   "keywords": [
     "messenger",
