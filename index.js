@@ -72,14 +72,21 @@ app.post('/webhook', function (req, res) {
         if(event.optin){
             sendTextMessage(sender, "Hey there! Call me Jay. To see a list of things you can do on Jayant's Experiments, type 'help'.");
         }
-        // else if (event.message && event.message.text) {
-        //     text = event.message.text;
-        //     sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
-        //     console.log(text);
-        // }
-        else {
-            sendTextMessage(sender, "Damn. This action seems to be unhandled for now. Message m.me/jayantbhawal about this.");
+        else if (event.message && event.message.text) {
+            text = event.message.text;
+            client.message(text,context[sender],(error, data) => {
+                if(error){
+                    console.error(error);
+                }
+                else{
+                    console.log("Data!",data);
+                }
+            });
+            console.log(text);
         }
+        // else {
+        //     sendTextMessage(sender, "Damn. This action seems to be unhandled for now. Message m.me/jayantbhawal about this.");
+        // }
     }
     res.sendStatus(200);
 });
