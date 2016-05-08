@@ -79,8 +79,6 @@ app.post('/webhook', function (req, res) {
         // }
         else {
             sendTextMessage(sender, "Damn. This action seems to be unhandled for now. Message m.me/jayantbhawal about this.");
-            sendTextMessage(sender, "Event body:");
-            sendTextMessage(sender, req.body);
         }
     }
     res.sendStatus(200);
