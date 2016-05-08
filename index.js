@@ -5,7 +5,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var request = require('request');
-var yql = require('yql');
+var YQL = require('yql');
 var Wit = require('node-wit').Wit;
 
 var token = process.env.FB_TOKEN;
@@ -37,14 +37,28 @@ function sendTextMessage(sender, text) {
 
 const actions = {
     say(sessionId, context, message, cb) {
-        console.log(message);
+        sendTextMessage(sessionId,message);
         cb();
     },
     merge(sessionId, context, entities, message, cb) {
+        context.ents = entities;
         cb(context);
     },
     error(sessionId, context, err) {
         console.log(err.message);
+    },
+    weather_lookup(sessionId, context, cb){
+        console.log("WEATHER LOOKUP");
+        var location = context.ents.location[0].value;
+
+        var query = new YQL('select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="'+location+'") and u="c"');
+        query.exec(function(err, data) {
+            var location = data.query.results.channel.location;
+            var condition = data.query.results.channel.item.condition;
+
+            sendTextMessage(sessionId,'The current weather in ' + location.city + ',' + location.region + ' is ' + condition.temp + '°C.');
+            cb(context);
+        });
     }
 };
 const client = new Wit(wit_token, actions);
@@ -70,18 +84,28 @@ app.post('/webhook', function (req, res) {
 
         context[sender] = context[sender] || {};
         if(event.optin){
-            sendTextMessage(sender, "Hey there! Call me Jay. To see a list of things you can do on Jayant's Experiments, type 'help'.");
+            sendTextMessage(sender, "Hey there! To see a list of things you can do on Jayant's Experiments, type 'help'.");
         }
         else if (event.message && event.message.text) {
-            text = event.message.text;
-            client.message(text,context[sender],(error, data) => {
-                if(error){
-                    console.error(error);
-                }
-                else{
-                    console.log("Data!",data);
-                }
-            });
+            var text = event.message.text;
+            if(text == "help"){
+                var helpText = "Welcome to Jayant's Experiments Messenger Bot.\n" +
+                    "For now, the listed things are all that this bot can do:\n" +
+                    "1. 'What's the weather in Kolkata?'";
+
+                text = helpText;
+                sendTextMessage(sender, text);
+            }
+            else{
+                client.runActions(sender,text,context[sender],(error, data) => {
+                    if(error){
+                        console.error(error);
+                    }
+                    else{
+                        console.log("Data!",JSON.stringify(data));
+                    }
+                });
+            }
             console.log(text);
         }
         // else {
