@@ -49,16 +49,18 @@ const actions = {
     },
     weather_lookup(sessionId, context, cb){
         console.log("WEATHER LOOKUP");
-        var location = context.ents.location[0].value;
+        if(context.ents.location){
+            var location = context.ents.location[0].value;
 
-        var query = new YQL('select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="'+location+'") and u="c"');
-        query.exec(function(err, data) {
-            var location = data.query.results.channel.location;
-            var condition = data.query.results.channel.item.condition;
+            var query = new YQL('select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="'+location+'") and u="c"');
+            query.exec(function(err, data) {
+                var location = data.query.results.channel.location;
+                var condition = data.query.results.channel.item.condition;
 
-            sendTextMessage(sessionId,'The current weather in ' + location.city + ',' + location.region + ' is ' + condition.temp + '°C.');
-            cb(context);
-        });
+                sendTextMessage(sessionId,'The current weather in ' + location.city + ',' + location.region + ' is ' + condition.temp + '°C.');
+                cb(context);
+            });
+        }
     }
 };
 const client = new Wit(wit_token, actions);
