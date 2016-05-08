@@ -61,6 +61,9 @@ const actions = {
                 cb(context);
             });
         }
+        else{
+            cb(context);
+        }
     }
 };
 const client = new Wit(wit_token, actions);
