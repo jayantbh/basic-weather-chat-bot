@@ -93,7 +93,7 @@ app.post('/webhook', function (req, res) {
         }
         else if (event.message && event.message.text) {
             var text = event.message.text;
-            if(text == "help"){
+            if(text.toLowerCase() == "help"){
                 var helpText = "Welcome to Jayant's Experiments Messenger Bot.\n" +
                     "For now, the listed things are all that this bot can do:\n" +
                     "1. 'What's the weather in Kolkata?'";
